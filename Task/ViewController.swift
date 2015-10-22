@@ -19,6 +19,10 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    let stagedTask = Task(title: "Do the dishes", dueDate: nil, notes: nil, tag: [])
+    
+    let secondStagedTask = Task(title: "Clean car", dueDate: NSDate(), notes: nil, tag: [])
 
 
 }
