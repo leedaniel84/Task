@@ -11,29 +11,35 @@ import Foundation
 class TaskController {
     
     static let sharedTaskController = TaskController()
-    var taskArray: [Task]
     
+    var taskArray: [Task] = []
+
     init() {
-        self.taskArray = []
+        load()
     }
     
     func addTask(task: Task) {
         taskArray.append(task)
+        for task in taskArray{
+            print("\(task.title)")
+        }
+        save()
     }
     
     func removeTask(indexPath: NSIndexPath) {
         taskArray.removeAtIndex(indexPath.row)
+        save()
     }
     
     func save() {
         NSKeyedArchiver.archiveRootObject(taskArray, toFile: Task.ArchiveURL.path!)
     }
     
-    func load() -> [Task] {
-        if let unarchivedTasks = NSKeyedUnarchiver.unarchiveObjectWithFile(Task.ArchiveURL.path!) as? [Task] {
-            return unarchivedTasks
-        }else {
-            return []
+    func load() {
+        if let unarchivedTasks = NSKeyedUnarchiver.unarchiveObjectWithFile(Task.ArchiveURL.path!) as? [Task]{
+            self.taskArray = unarchivedTasks
+        } else {
+            taskArray = []
         }
     }
 }
