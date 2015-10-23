@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TaskListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class TaskListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTableViewCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -33,11 +33,25 @@ class TaskListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cellID", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("cellID", forIndexPath: indexPath) as! ButtonTableViewCell
         let task = TaskController.sharedTaskController.taskArray[indexPath.row]
-        cell.textLabel?.text = task.title
-        
+        cell.updateWithTask(task)
+        cell.delegate = self
         return cell
+    }
+    
+    func buttonCellButtonTapped(sender: ButtonTableViewCell) {
+        if let indexPath = tableView.indexPathForCell(sender) {
+        let task = TaskController.sharedTaskController.taskArray[indexPath.row]
+            if task.isComplete {
+                task.isComplete = false
+            }else {
+                task.isComplete = true
+            }
+        sender.updateWithTask(task)
+        TaskController.sharedTaskController.save()
+        tableView.reloadData()
+        }
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -54,10 +68,14 @@ class TaskListViewController: UIViewController, UITableViewDataSource, UITableVi
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "editExistingTask" {
             if let destination = segue.destinationViewController as? TaskDetailViewController {
-                _ = destination.loadView()
                 guard let cell = sender as? UITableViewCell,
-                    let indexPath = tableView.indexPathForCell(cell) else {return}
-                destination.updateWithTask(indexPath.row)
+                 let indexPath = tableView.indexPathForCell(cell) else {return}
+                destination.task = TaskController.sharedTaskController.taskArray[indexPath.row]
+                
+                //                _ = destination.loadView()
+//                guard let cell = sender as? UITableViewCell,
+//                    let indexPath = tableView.indexPathForCell(cell) else {return}
+//                destination.updateWithTask(indexPath.row)
             }
         }
     }

@@ -25,6 +25,9 @@ class TaskDetailViewController: UIViewController {
 
         datePickerHeightConstraint.active = false
         dateButtonHeightConstraint.active = true
+        if let task = task {
+        updateWithTask(task)
+        }
         // Do any additional setup after loading the view.
     }
 
@@ -46,6 +49,14 @@ class TaskDetailViewController: UIViewController {
             return
         }
         let newTask = Task(title: title, dueDate: nil, notes: nil)
+        
+        if datePicker.hidden != true {
+            newTask.dueDate = datePicker.date
+        }
+            
+        if notesTextView.text != nil {
+            newTask.notes = notesTextView.text
+        }
         TaskController.sharedTaskController.addTask(newTask)
         self.navigationController?.popViewControllerAnimated(true)
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -62,27 +73,27 @@ class TaskDetailViewController: UIViewController {
         
     }
     
-    func updateWithTask(index: Int) {
-        task = TaskController.sharedTaskController.taskArray[index]
-        if let task = task {
-            taskTitleTextField.text = task.title
+    func updateWithTask(task: Task) {
+        taskTitleTextField.text = task.title
+        
+        if let notes = task.notes {
             
-            if let notes = task.notes {
-                
-                notesTextView.text = notes
-            }
-            if let dueDate = task.dueDate {
-                let formatter = NSDateFormatter()
-                formatter.dateStyle = NSDateFormatterStyle.LongStyle
-                formatter.timeStyle = .ShortStyle
-                dateButton.setTitle(formatter.stringFromDate(dueDate), forState: .Normal)
-            }
+            notesTextView.text = notes
         }
-        
-        
+        if let dueDate = task.dueDate {
+            let formatter = NSDateFormatter()
+            formatter.dateStyle = NSDateFormatterStyle.LongStyle
+            formatter.timeStyle = .ShortStyle
+            dateButton.setTitle(formatter.stringFromDate(dueDate), forState: .Normal)
+        } else {
+            dateButton.setTitle("Add due date", forState: .Normal)
+        }
     }
-
+    
+    
 }
+
+
 
 
 
