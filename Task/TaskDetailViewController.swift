@@ -61,5 +61,32 @@ class TaskDetailViewController: UIViewController {
     func noTitleAlert() {
         
     }
+    
+    func updateWithTask(index: Int) {
+        task = TaskController.sharedTaskController.taskArray[index]
+        if let task = task {
+            taskTitleTextField.text = task.title
+            
+            if let notes = task.notes {
+                
+                notesTextView.text = notes
+            }
+            if let dueDate = task.dueDate {
+                let formatter = NSDateFormatter()
+                formatter.dateStyle = NSDateFormatterStyle.LongStyle
+                formatter.timeStyle = .ShortStyle
+                dateButton.setTitle(formatter.stringFromDate(dueDate), forState: .Normal)
+            }
+        }
+        
+        
+    }
 
 }
+
+
+
+
+
+
+

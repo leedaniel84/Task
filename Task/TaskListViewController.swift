@@ -50,6 +50,17 @@ class TaskListViewController: UIViewController, UITableViewDataSource, UITableVi
             
         }
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "editExistingTask" {
+            if let destination = segue.destinationViewController as? TaskDetailViewController {
+                _ = destination.loadView()
+                guard let cell = sender as? UITableViewCell,
+                    let indexPath = tableView.indexPathForCell(cell) else {return}
+                destination.updateWithTask(indexPath.row)
+            }
+        }
+    }
 
 
 }
